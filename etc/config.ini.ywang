@@ -1,0 +1,70 @@
+[temperature]
+var = temp
+xcoord = lon
+ycoord = lat
+zcoord = depth
+tcoord = time
+i1 = 88
+i2 = 150
+j1 = 271
+j2 = 271
+maskf = ./data/NorCPM_2010.nc
+maskvar = temp
+maskmdi = -32768
+
+[salinity]
+var = saln
+xcoord = lon
+ycoord = lat
+zcoord = depth
+tcoord = time
+i1 = 88
+i2 = 150
+j1 = 271
+j2 = 271
+maskf = ./data/NorCPM_2010.nc
+maskvar = temp
+maskmdi = -32768
+
+[meridional_velocity]
+var = vvellvl
+xcoord = vlon
+ycoord = lat
+zcoord = depth
+tcoord = time
+i1 = 88
+i2 = 150
+j1 = 271
+j2 = 271
+maskf = ./data/NorCPM_2010.nc
+maskvar = vvellvl
+maskmdi = -32768
+
+[taux]
+var = taux
+xcoord = lon
+ycoord = lat
+tcoord = time
+i1 = 88
+i2 = 150
+j1 = 271
+j2 = 271
+maskf = ./data/NorCPM_2010.nc
+maskvar = taux
+maskmdi = -32768
+
+[options]
+georef_level = 4750
+ekman_depth = 50
+fc_minlon = -81.0
+fc_maxlon = -75.0
+wbw_maxlon = -71.0
+int_maxlon = -10.
+ek_profile_type = linear
+reference_salinity = 35.17
+
+[output]
+date_format=%Y
+plot=False
+name=norcpm
+outdir=./data/

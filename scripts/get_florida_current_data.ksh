@@ -1,6 +1,9 @@
 #!/bin/ksh
 
-module load nco
+if [ ! $(command -v 'ncra') ]
+then
+    module load NCO/4.6.6-intel-2017a
+fi
 
 # Define help function
 display_help() {

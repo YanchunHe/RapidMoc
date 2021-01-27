@@ -1,0 +1,78 @@
+[temperature]
+var = templvl
+xcoord = plon
+ycoord = plat
+zcoord = depth
+tcoord = time
+i1 = 30
+i2 = 94
+j1 = 260
+j2 = 260
+maskf = ./hy.3d.nc
+maskvar = templvl
+maskmdi = -32768
+
+[salinity]
+var = salnlvl
+xcoord = plon
+ycoord = plat
+zcoord = depth
+tcoord = time
+i1 = 30
+i2 = 94
+j1 = 260
+j2 = 260
+maskf = ./hy.3d.nc
+maskvar = salnlvl
+maskmdi = -32768
+
+[meridional_velocity]
+var = vvellvl
+xcoord = vlon
+ycoord = vlat
+zcoord = depth
+tcoord = time
+i1 = 30
+i2 = 94
+j1 = 260
+j2 = 260
+maskf = ./hy.3d.nc
+maskvar = vvellvl
+maskmdi = -32768
+
+[taux]
+var = ztx
+xcoord = ulon
+ycoord = ulat
+tcoord = time
+i1 = 30
+i2 = 94
+j1 = 260
+j2 = 260
+maskf = ./hm.2d.nc
+maskvar = ztx
+maskmdi = -32768
+
+[observations] 
+heat_transports =/nird/home/yanchun/tools/RapidMoc/obs/rapid/moht/mocha_mht_data_2015.nc
+volume_transports =/nird/home/yanchun/tools/RapidMoc/obs/rapid/volume/moc_transports.nc
+streamfunctions =/nird/home/yanchun/tools/RapidMoc/obs/rapid/volume/moc_vertical.nc
+florida_current =/nird/home/yanchun/tools/RapidMoc/obs/florida_straits/FC_cable_transport_2004-2015.nc
+time_avg =yearly
+
+[options]
+georef_level = 4750
+ekman_depth = 50
+fc_minlon = -80.0
+fc_maxlon = -74.0
+wbw_maxlon = -71.0
+int_maxlon = -10.
+ek_profile_type = linear
+reference_salinity = 35.17
+
+[output]
+date_format=%Y%m
+plot=False
+name=organic
+outdir=/cluster/projects/nn2343k/rapidmoc/
+
