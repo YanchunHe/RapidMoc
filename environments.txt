@@ -1,0 +1,2 @@
+python2.7
+machine: tested on nird and fram

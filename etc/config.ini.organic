@@ -61,13 +61,13 @@ florida_current =/nird/home/yanchun/tools/RapidMoc/obs/florida_straits/FC_cable_
 time_avg =yearly
 
 [options]
-georef_level = 4750
+georef_level = 1100
 ekman_depth = 50
 fc_minlon = -80.0
-fc_maxlon = -74.0
-wbw_maxlon = -71.0
+fc_maxlon = -78.0
+wbw_maxlon = -73.0
 int_maxlon = -10.
-ek_profile_type = linear
+ek_profile_type = uniform
 reference_salinity = 35.17
 
 [output]
