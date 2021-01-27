@@ -54,10 +54,10 @@ maskvar = ztx
 maskmdi = -32768
 
 [observations] 
-heat_transports =/nird/home/yanchun/tools/RapidMoc/obs/rapid/moht/mocha_mht_data_2015.nc
-volume_transports =/nird/home/yanchun/tools/RapidMoc/obs/rapid/volume/moc_transports_2017.nc
-streamfunctions =/nird/home/yanchun/tools/RapidMoc/obs/rapid/volume/moc_vertical_2017.nc
-florida_current =/nird/home/yanchun/tools/RapidMoc/obs/florida_straits/FC_cable_transport_2004-2015.nc
+heat_transports =/nird/home/yanchun/tools/RapidMoc/obs/rapid/moht/mocha_mht_data_ERA5_v2018_2.nc
+volume_transports =/nird/home/yanchun/tools/RapidMoc/obs/rapid/volume/moc_transports_2020.nc
+streamfunctions =/nird/home/yanchun/tools/RapidMoc/obs/rapid/volume/moc_vertical_2020.nc
+florida_current =/nird/home/yanchun/tools/RapidMoc/obs/florida_straits/FC_cable_transport_2000-2021.nc
 time_avg =yearly
 
 [options]
