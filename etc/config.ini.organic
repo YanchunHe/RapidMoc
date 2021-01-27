@@ -8,7 +8,7 @@ i1 = 30
 i2 = 94
 j1 = 260
 j2 = 260
-maskf = ./hy.3d.nc
+maskf = ./data/micom.hy.3000-3150.nc
 maskvar = templvl
 maskmdi = -32768
 
@@ -22,7 +22,7 @@ i1 = 30
 i2 = 94
 j1 = 260
 j2 = 260
-maskf = ./hy.3d.nc
+maskf = ./data/micom.hy.3000-3150.nc
 maskvar = salnlvl
 maskmdi = -32768
 
@@ -36,7 +36,7 @@ i1 = 30
 i2 = 94
 j1 = 260
 j2 = 260
-maskf = ./hy.3d.nc
+maskf = ./data/micom.hy.3000-3150.nc
 maskvar = vvellvl
 maskmdi = -32768
 
@@ -49,14 +49,14 @@ i1 = 30
 i2 = 94
 j1 = 260
 j2 = 260
-maskf = ./hm.2d.nc
+maskf = ./data/micom.hm.3000-3150.nc
 maskvar = ztx
 maskmdi = -32768
 
 [observations] 
 heat_transports =/nird/home/yanchun/tools/RapidMoc/obs/rapid/moht/mocha_mht_data_2015.nc
-volume_transports =/nird/home/yanchun/tools/RapidMoc/obs/rapid/volume/moc_transports.nc
-streamfunctions =/nird/home/yanchun/tools/RapidMoc/obs/rapid/volume/moc_vertical.nc
+volume_transports =/nird/home/yanchun/tools/RapidMoc/obs/rapid/volume/moc_transports_2017.nc
+streamfunctions =/nird/home/yanchun/tools/RapidMoc/obs/rapid/volume/moc_vertical_2017.nc
 florida_current =/nird/home/yanchun/tools/RapidMoc/obs/florida_straits/FC_cable_transport_2004-2015.nc
 time_avg =yearly
 
