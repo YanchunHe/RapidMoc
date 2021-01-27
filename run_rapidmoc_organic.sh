@@ -30,7 +30,7 @@ for (( yr = $yyyy1; yr <= $yyyy2; yr++ )); do
     annual_file=RapidMoc_${yr}-${yr}_natl_meridional_transports_at_26N.nc
 
     if [ ! -f ${outpath}/${annual_file} ]; then
-        sed -i "74s/date_format.*/date_format=%%Y/" ./etc/config.ini.organic
+        sed -i "74s/date_format.*/date_format=%Y/" ./etc/config.ini.organic
         ncks -h -O -v templvl,salnlvl,vvellvl ${datapath}/NBF1850OC_ORGANIC1.micom.hy.${yr}.nc ./hy.3d.nc
         ncks -h -O -v ztx ${datapath}/NBF1850OC_ORGANIC1.micom.hm.${yr}-01.nc ./hm.2d.nc
         ncks -h -A -v plat,plon,vlat,vlon ~/tools/data/grid_tnx1v1.nc ./hy.3d.nc
@@ -41,7 +41,7 @@ for (( yr = $yyyy1; yr <= $yyyy2; yr++ )); do
 
         ./run_rapidmoc.py ./etc/config.ini.organic ./hy.3d.nc ./hy.3d.nc ./hm.2d.nc ./hy.3d.nc
 
-        sed -i "74s/%%Y/%%Y%%m/" ./etc/config.ini.organic
+        sed -i "74s/%Y/%Y%m/" ./etc/config.ini.organic
         for mon in `seq -f %02g 1 12`;do
             month_file=RapidMoc_${yr}${mon}-${yr}${mon}_natl_meridional_transports_at_26N.nc
             if [[ ! -f ${outpath}/${month_file} ]]; then
