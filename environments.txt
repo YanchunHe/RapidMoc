@@ -1,2 +1,7 @@
-python2.7
-machine: tested on nird and fram
+# python
+* python2.7: `module load Python/2.7.13-intel-2017a`
+
+# machine
+* only passed test on fram for calculation and ploting
+* can calculate on NIRD
+* `plot_rapid_regions.py` tested run on local MacOS
