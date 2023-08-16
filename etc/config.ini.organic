@@ -54,25 +54,25 @@ maskvar = ztx
 maskmdi = -32768
 
 [observations] 
-heat_transports =/nird/home/yanchun/tools/RapidMoc/obs/rapid/moht/mocha_mht_data_ERA5_v2018_2.nc
-volume_transports =/nird/home/yanchun/tools/RapidMoc/obs/rapid/volume/moc_transports_2020.nc
-streamfunctions =/nird/home/yanchun/tools/RapidMoc/obs/rapid/volume/moc_vertical_2020.nc
-florida_current =/nird/home/yanchun/tools/RapidMoc/obs/florida_straits/FC_cable_transport_2000-2021.nc
+heat_transports =../obs/rapid/moht/mocha_mht_data_ERA5_v2018_2.nc
+volume_transports =../obs/rapid/volume/moc_transports_2020.nc
+streamfunctions =../obs/rapid/volume/moc_vertical_2020.nc
+florida_current =../obs/florida_straits/FC_cable_transport_2000-2021.nc
 time_avg =yearly
 
 [options]
-georef_level = 1100
+georef_level = 4740
 ekman_depth = 50
 fc_minlon = -80.0
-fc_maxlon = -78.0
-wbw_maxlon = -73.0
+fc_maxlon = -75.0
+wbw_maxlon = -71.0
 int_maxlon = -10.
-ek_profile_type = uniform
+ek_profile_type = linear
 reference_salinity = 35.17
 
 [output]
 date_format=%Y%m
 plot=False
 name=organic
-outdir=/projects/NS9015K/www/output/organic/NBF1850OC_ORGANIC1/rapidmoc
+outdir=/tos-project2/NS9015K/www/output/organic/NBF1850OC_ORGANIC1/rapidmoc2021
 

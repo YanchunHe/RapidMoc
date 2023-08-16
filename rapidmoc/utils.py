@@ -23,11 +23,11 @@ def get_ncdates(nc, tvar='time'):
 
 def get_datestr(dates, date_format):
     """ Return string of form 'mindate-maxdate' for specified format """
-    datestr = '%s-%s' % (dates.min().strftime(date_format), 
-                        dates.max().strftime(date_format))
-    #datestr = '%s-%s' %('{0.year:4d}'.format(dates.min()),
-                      #'{0.year:4d}'.format(dates.max()))
-    #datestr=datestr.replace(" ", "")
+    #datestr = '%s-%s' % (dates.min().strftime(date_format), 
+                        #dates.max().strftime(date_format))
+    datestr = '%s-%s' %('{0.year:4d}'.format(dates.min()),
+                      '{0.year:4d}'.format(dates.max()))
+    datestr=datestr.replace(" ", "")
     
     return datestr
 
