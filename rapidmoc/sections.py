@@ -8,7 +8,9 @@ from netCDF4 import MFTime, MFDataset, Dataset, num2date
 import numpy as np
 import copy
 import glob
+import pandas as pd
 
+from . import utils
 
 class NetCDF4Error(Exception):
     pass
@@ -69,7 +71,7 @@ class ZonalSections(object):
         else:
             self.surface_field = True
             self.zcoord = None
-
+            
         self._read_data()
         self._read_xcoord()
         self._read_ycoord()
@@ -83,16 +85,24 @@ class ZonalSections(object):
             mask = self._read_mask()
             self._update_data_mask(mask)
         elif hasattr(self.data, 'mask'):
-            print "%s: using mask information from %s." % (self.var, self.f)
+            print("%s: using mask information from %s." % (self.var, self.f))
         else:
             raise MaskError('Mask information must be specified')
+        
+        if config.has_option(section, 'fill_missing_coords'):
+            self.fill_missing_coords = config.getboolean(section, 'fill_missing_coords')
+        else:
+            self.fill_missing_coords = False
 
+        if self.fill_missing_coords:
+            self._infill_coords()
+                    
         self._apply_meridional_average()
 
     @property
     def cell_widths(self):
         """ Return width of cells along section """
-
+        
         x = self.xbounds
         y = self.ybounds
         nmax = len(x) - 1
@@ -127,7 +137,7 @@ class ZonalSections(object):
         if self.surface_field:
             return None
         else:
-            return self._get_bounds(self.z)
+            return self._get_zbounds(self.z)
 
     @property 
     def mask(self):
@@ -260,7 +270,7 @@ class ZonalSections(object):
     def _get_bounds(self, data):
         """ Estimate bounds using mid-points """
         nmax = len(data) + 1
-        bounds = np.zeros(nmax)
+        bounds = np.zeros(nmax)       
         
         for nbound in range(nmax):
             if nbound == 0:
@@ -269,8 +279,23 @@ class ZonalSections(object):
                 bounds[nbound] = data[nbound-1] + 0.5 * (data[nbound-1] - data[nbound-2])
             else:
                 bounds[nbound] = 0.5 * (data[nbound] + data[nbound-1]) 
-                
+        
         return bounds
+
+
+    def _get_zbounds(self, z):
+        """ Calculate zbounds from z=0 using mid-points """
+        nmax = len(z) + 1
+        zbounds = np.zeros(nmax)       
+        
+        for nbound in range(nmax):
+            nz = nbound - 1
+            if nbound == 0:
+                zbounds[nbound] = 0
+            else:
+                zbounds[nbound] = 2 * z[nz] - zbounds[nbound-1]
+        return zbounds
+
 
     def _opennc(self, f):
         """ Open netcdf data set either Dataset or MFDataset. """
@@ -278,7 +303,8 @@ class ZonalSections(object):
             try:
                 nc = MFDataset(f)
             except ValueError as err:
-                print 'netcdf4.MFDataset incompatible with NETCDF4. Try concatenating data into a single file.'
+                print('netcdf4.MFDataset incompatible with NETCDF4.'
+                      'Try concatenating data into a single file.')
                 raise NetCDF4ERROR(err)
         else:
             nc = Dataset(f)
@@ -290,7 +316,7 @@ class ZonalSections(object):
         if self.surface_field:
             self.data = self.data.mean(axis=1)
         else:
-            self.data = self.data.mean(axis=2)            
+            self.data = self.data.mean(axis=2)
         self.x = self.x.mean(axis=0)
         self.y = self.y.mean(axis=0)
 
@@ -314,6 +340,29 @@ class ZonalSections(object):
         nc.close()
         return mask 
  
+    def _infill_coords(self):
+        """ Infill missing coordinate info assuming cells are equally spaced """
+        # First mask coordinsates using data mask
+        if self.surface_field:
+            coordmask = self.mask[0,:,:]
+        else:
+            coordmask = self.mask[0,0,:,:]
+        self.x = np.ma.MaskedArray(self.x, mask=coordmask)    
+        self.y = np.ma.MaskedArray(self.y, mask=coordmask) 
+        
+        # Linearly interpolate coordinates assuming equal spacing.
+        fillx = np.array(self.x) 
+        filly = np.array(self.y)
+        idx=np.arange(len(fillx[0]))
+        for n in range(fillx.shape[0]):
+            missing = self.x.mask[n]
+            not_missing = missing == False
+            fillx[n,missing] = np.interp(idx[missing], idx[not_missing],self.x[n,not_missing])
+            filly[n,missing] = np.interp(idx[missing], idx[not_missing],self.y[n,not_missing])
+        self.x = np.array(fillx)
+        self.y = np.array(filly)
+        
+
     def _read_data(self):
         """ Read data from netcdf file(s) """
         nc = self._opennc(self.f)
@@ -339,13 +388,13 @@ class ZonalSections(object):
         else:
             # Dummy j-index for averaging
             self.x = ncvar[self.i1:self.i2+1][np.newaxis] 
-            
+    
+        nc.close()
+
         # Set range -180 to 180
         if self.x.max() > 180:
             self.x[self.x > 180] = self.x[self.x > 180] - 360
-
-        nc.close()
-        
+                
     def _read_ycoord(self):
         """ Read latitude data in decimal degrees from netcdf file(s) """
         nc = self._opennc(self.f)
@@ -353,8 +402,7 @@ class ZonalSections(object):
         if ncvar.ndim == 2:
             self.y = ncvar[self.j1:self.j2+1,self.i1:self.i2+1]
         else:
-             # Dummy j-index for averaging
-            self.y = ncvar[self.i1:self.i2+1][np.newaxis]
+            self.y = ncvar[self.j1:self.j2+1][:,np.newaxis] * np.ones(self.i2-self.i1+1)[np.newaxis]
         nc.close()
         
     def _read_tcoord(self):
@@ -364,13 +412,16 @@ class ZonalSections(object):
         
         if len(glob.glob(self.f)) > 1:
             try:
-                self.dates = num2date(MFTime(t)[:], calendar=t.calendar, units=t.units)
+                dts = num2date(MFTime(t)[:], calendar=t.calendar, units=t.units)
+                self.dates = utils.convert_to_datetime(dts)
             except:
-                print 'netcdf4.MFTime incompatible with NETCDF4. Try concatenating data into a single file.'
+                print('netcdf4.MFTime incompatible with NETCDF4.'
+                      'Try concatenating data into a single file.')
                 raise NetCDF4ERROR(err)
         else:
-            self.dates = num2date(t[:], calendar=t.calendar, units=t.units)            
-            
+            dts = num2date(t[:], calendar=t.calendar, units=t.units)            
+            self.dates = utils.convert_to_datetime(dts)
+
     def _read_zcoord(self):
         """ Read z coordinate data from netcdf file(s) """
         if self.surface_field:

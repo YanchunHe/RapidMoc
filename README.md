@@ -28,19 +28,15 @@ The impact of uncertainties in the geostrophic level of no motion is described f
 
 ## Using RapidMoc
 
-### Install package
+### Installing dependencies
 
-To install the package, run:
+RapidMoc is written in python3. To install the required dependencies, run:
 
 ```bash
 pip install git+https://github.com/cdr30/RapidMoc.git#egg=RapidMoc
 ```
 
-### Install manually
-
-#### Required python libraries
-RapidMoc was developed using Python 2.7 and requires the installation of the following python libraries and their associated dependencies: `numpy`, `netCDF4`, `ConfigParser`, `argparse`, `os`, `matplotlib`, `abc`, `datetime`, `scipy`, `copy`, and `math`. 
-
+### Getting the code
 
 #### Cloning the git repository
 To retrieve a copy of the RapidMoc source code and create a working directory, run the following on the command line: 
@@ -197,6 +193,7 @@ j2 = maximum index in y coordinate used to extract zonal section from tfile/sfil
 maskf = path to netcdf file containing explicit data mask [string, optional]
 maskvar = netcdf variable name for mask in maskf [string, optional]
 maskmdi = missing data indicator for maskvar [float, optional]
+fill_missing_coords = if True, infill missing coordinate info (e.g. over land) by linear interpolation. [boolean, optional, default=False]
 
 [observations] 
 heat_transports = path to mocha mht data.nc [string, optional]

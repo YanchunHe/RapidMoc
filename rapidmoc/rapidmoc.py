@@ -5,14 +5,14 @@ Module containing main routines to execute RapidMoc
 
 
 import argparse
-import ConfigParser
+import configparser
 import copy
 
 
-import sections
-import transports
-import observations
-import plotdiag
+from . import sections
+from . import transports
+from . import observations
+from . import plotdiag
 
 
 def get_args():
@@ -30,7 +30,9 @@ def get_args():
     parser.add_argument(
         'vfile', type=str, help='Path for netcdf file(s) containing meridional velocity data.')
     parser.add_argument(
-        '--name', type=str, help='Name used in output files.', default='RapidMoc')
+        '--name', help='Name used in output files. Overrides value in config file.', default=None)
+    parser.add_argument(
+        '--outdir', help='Path used for output data. Overrides value in config file.', default=None)
     args = parser.parse_args()
 
     return args
@@ -39,7 +41,7 @@ def get_args():
 
 def get_config(args):
     """ Return configuration options as <ConfigParser> object. """
-    config = ConfigParser.ConfigParser()
+    config = configparser.ConfigParser()
     config.read(args.config_file)
 
     return config
@@ -93,7 +95,12 @@ def main():
     config = get_config(args)
 
     # Update name in config file
-    config.set('output', 'name', args.name)
+    if args.name is not None:
+        config.set('output', 'name', args.name)
+
+    # Update outdir in config file
+    if args.outdir is not None:
+        config.set('output', 'outdir', args.outdir)
 
     # Read data
     t = sections.ZonalSections(args.tfile, config, 'temperature')
@@ -114,6 +121,6 @@ def main():
         call_plotdiag(config, trans)
         
     # Write data
-    print 'SAVING: %s' % trans.filepath()
+    print('SAVING: %s' % trans.filepath())
     trans.close()
 

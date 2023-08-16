@@ -4,7 +4,6 @@ transport diagnostics
 
 """
 
-
 import matplotlib
 matplotlib.use('AGG')
 import matplotlib.pyplot as plt
@@ -13,8 +12,8 @@ from matplotlib.colors import BoundaryNorm
 import numpy as np
 from scipy import stats
 
-import observations
-import utils
+from . import observations
+from . import utils
 
 
 # COLORS 
@@ -22,7 +21,7 @@ c1='#a6cee3'
 c2='#1f78b4'
 c3='#b2df8a'
 c4='#33a02c'
-
+MAX_NAME_LEN=15
 
 def plot_streamfunctions(trans, name='simulated', basename='', obs=None,lw=4):
     """ Plot time mean overturning stream functions"""
@@ -66,7 +65,7 @@ def plot_streamfunctions(trans, name='simulated', basename='', obs=None,lw=4):
     # Save plot
     plt.tight_layout()
     savef = basename + 'overturning_streamfunctions_at_26n.png'
-    print 'SAVING: %s' % savef
+    print('SAVING: %s' % savef)
     fig.savefig(savef, resolution=300)
     plt.close()
     
@@ -118,7 +117,7 @@ def plot_streamfunction_hovmollers(trans, name='simulated', basename='', obs=Non
     # Save plot
     plt.tight_layout()
     savef = basename + 'overturning_streamfunction_at_26n_hovmoller.png'
-    print 'SAVING: %s' % savef
+    print('SAVING: %s' % savef)
     fig.savefig(savef, resolution=300)
     plt.close() 
     
@@ -153,7 +152,7 @@ def plot_zonal_mean_temperature(trans, name='simulated', basename='', obs=None,l
     # Save plot
     plt.tight_layout()
     savef = basename + 'zonal_mean_temperature_at_26n.png'
-    print 'SAVING: %s' % savef
+    print('SAVING: %s' % savef)
     fig.savefig(savef, resolution=300)
     plt.close()
 
@@ -196,7 +195,7 @@ def plot_fc_transport_profile(trans, name='simulated', basename='', obs=None,lw=
     # Save plot
     plt.tight_layout()
     savef = basename + 'florida_current_transport_profile_at_26n.png'
-    print 'SAVING: %s' % savef
+    print('SAVING: %s' % savef)
     fig.savefig(savef, resolution=300)
     plt.close()
     
@@ -235,7 +234,7 @@ def plot_transport_profile(trans, name='simulated', basename='', obs=None,lw=4):
     # Save plot
     plt.tight_layout()
     savef = basename + 'basinwide_transport_profile_at_26n.png'
-    print 'SAVING: %s' % savef
+    print('SAVING: %s' % savef)
     fig.savefig(savef, resolution=300)
     plt.close()
     
@@ -299,7 +298,7 @@ def plot_volume_components(trans, basename='', name='simulated', obs_vol=None, o
     # Save plot
     plt.tight_layout()
     savef = basename + 'volume_transport_components_at_26n.png'
-    print 'SAVING: %s' % savef
+    print('SAVING: %s' % savef)
     fig.savefig(savef, resolution=300)
     plt.close()
     
@@ -409,7 +408,7 @@ def plot_moc_vs_oht(trans, basename='', name='simulated', obs_vol=None, obs_oht=
     # Save plot
     plt.tight_layout()
     savef = basename + 'moc_vs_heat_transports_at_26n.png'
-    print 'SAVING: %s' % savef
+    print('SAVING: %s' % savef)
     fig.savefig(savef, resolution=300)
     plt.close()
 
@@ -502,7 +501,7 @@ def plot_vol_vs_heat_transports(trans, basename='', name='simulated', obs_vol=No
     # Save plot
     plt.tight_layout()
     savef = basename + 'volume_vs_heat_transports_at_26n.png'
-    print 'SAVING: %s' % savef
+    print('SAVING: %s' % savef)
     fig.savefig(savef, resolution=300)
     plt.close()
 
@@ -586,7 +585,7 @@ def plot_geometric_heat_components(trans, basename='', name='simulated', obs=Non
     # Save plot
     plt.tight_layout()
     savef = basename + 'heat_transports_geometric_decomposition_at_26n.png'
-    print 'SAVING: %s' % savef
+    print('SAVING: %s' % savef)
     fig.savefig(savef, resolution=300)
     plt.close()
     
@@ -659,7 +658,7 @@ def plot_rapid_heat_components(trans, basename='', name='simulated', obs=None,lw
     # Save plot
     plt.tight_layout()
     savef = basename + 'heat_transports_rapid_decomposition_at_26n.png'
-    print 'SAVING: %s' % savef
+    print('SAVING: %s' % savef)
     fig.savefig(savef, resolution=300)
     plt.close()
     
@@ -756,7 +755,7 @@ def plot_moc_vs_oft(trans, basename='', name='simulated', obs_vol=None, obs_oft=
     # Save plot
     plt.tight_layout()
     savef = basename + 'moc_vs_freshwater_transports_at_26n.png'
-    print 'SAVING: %s' % savef
+    print('SAVING: %s' % savef)
     fig.savefig(savef, resolution=300)
     plt.close()
 
@@ -850,7 +849,7 @@ def plot_vol_vs_fw_transports(trans, basename='', name='simulated', obs_vol=None
     # Save plot
     plt.tight_layout()
     savef = basename + 'volume_vs_freshwater_transports_at_26n.png'
-    print 'SAVING: %s' % savef
+    print('SAVING: %s' % savef)
     fig.savefig(savef, resolution=300)
     plt.close()
 
@@ -932,7 +931,7 @@ def plot_geometric_fw_components(trans, basename='', name='simulated', obs=None,
     # Save plot
     plt.tight_layout()
     savef = basename + 'fw_transports_geometric_decomposition_at_26n.png'
-    print 'SAVING: %s' % savef
+    print('SAVING: %s' % savef)
     fig.savefig(savef, resolution=300)
     plt.close()
     
@@ -1003,7 +1002,7 @@ def plot_rapid_fw_components(trans, basename='', name='simulated', obs=None,lw=4
     # Save plot
     plt.tight_layout()
     savef = basename + 'fw_transports_rapid_decomposition_at_26n.png'
-    print 'SAVING: %s' % savef
+    print('SAVING: %s' % savef)
     fig.savefig(savef, resolution=300)
     plt.close()
 
@@ -1015,7 +1014,8 @@ def plot_diagnostics(trans, name='simulated', outdir='./', date_format='%Y%m%d',
     # Create basename for output files
     dts = utils.get_ncdates(trans)
     basename = utils.get_savename(outdir, name, dts, date_format,suffix='_')
-    
+    name = name[0:MAX_NAME_LEN]
+
     # Plot data
     plot_streamfunctions(trans, basename=basename, name=name, obs=obs_sf,lw=lw)
     plot_streamfunction_hovmollers(trans, basename=basename, name=name, obs=obs_sf)
