@@ -1,0 +1,66 @@
+[temperature]
+var = thetao
+xcoord = longitude
+ycoord = latitude
+zcoord = lev
+tcoord = time
+i1 = 29
+i2 = 99
+j1 = 261
+j2 = 262
+
+[salinity]
+var = so
+xcoord = longitude
+ycoord = latitude
+zcoord = lev
+tcoord = time
+i1 = 29
+i2 = 99
+j1 = 261
+j2 = 262
+
+[meridional_velocity]
+var = vo
+xcoord = longitude
+ycoord = latitude
+zcoord = lev
+tcoord = time
+i1 = 29
+i2 = 99
+j1 = 261
+j2 = 262
+
+[taux]
+var = tauuo
+xcoord = longitude
+ycoord = latitude
+tcoord = time
+i1 = 29
+i2 = 99
+j1 = 261
+j2 = 262
+
+[observations] 
+heat_transports =../obs/rapid/moht/mocha_mht_data_ERA5_v2018_2.nc
+volume_transports =../obs/rapid/volume/moc_transports_v2020_2.nc
+streamfunctions =../obs/rapid/volume/moc_vertical_v2020_2.nc
+florida_current =../obs/florida_straits/FC_cable_transport_2000-2023.nc
+time_avg =yearly
+
+[options]
+georef_level = 4740
+ekman_depth = 50
+fc_minlon = -80.0
+fc_maxlon = -76.0
+wbw_maxlon = -71.0
+int_maxlon = -10.
+ek_profile_type = linear
+reference_salinity = 35.17
+
+[output]
+date_format=%%Y%%m
+plot=False
+name=keyclim
+outdir=../outdir/keyclim/hist-eddy
+

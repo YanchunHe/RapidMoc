@@ -71,6 +71,7 @@ ek_profile_type = linear
 reference_salinity = 35.17
 
 [output]
-date_format=%Y%m
+date_format=%%Y%%m
 plot=True
 outdir=/home/rd/necr/tmp/rapidmoc/oras5/
+name=orca025

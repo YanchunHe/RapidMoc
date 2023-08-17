@@ -33,7 +33,7 @@ def read_txt(dataf):
         
     for l in lines:
         if l[0] != '%':
-            yy, mm, dd = np.int(l[0]), np.int(l[1]), np.int(l[2])
+            yy, mm, dd = np.int64(l[0]), np.int64(l[1]), np.int64(l[2])
             dts.append(datetime.datetime(yy,mm,dd))
             
             if l[3].lower() == 'nan':

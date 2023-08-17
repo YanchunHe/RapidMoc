@@ -139,10 +139,10 @@ class StreamFunctionObs(TransportObs):
         nc = Dataset(self.f)
         t = nc.variables['time']
         self.original_dates = num2date(t[:],units=t.units)
-        self.hh = np.array([dt.hour for dt in self.original_dates], dtype=np.int)
-        self.dd = np.array([dt.day for dt in self.original_dates], dtype=np.int)
-        self.mm = np.array([dt.month for dt in self.original_dates], dtype=np.int)
-        self.yy = np.array([dt.year for dt in self.original_dates], dtype=np.int)
+        self.hh = np.array([dt.hour for dt in self.original_dates], dtype=np.int32)
+        self.dd = np.array([dt.day for dt in self.original_dates], dtype=np.int32)
+        self.mm = np.array([dt.month for dt in self.original_dates], dtype=np.int32)
+        self.yy = np.array([dt.year for dt in self.original_dates], dtype=np.int32)
 
     def write_to_netcdf(self, ncfile):
         """ Write observation data to netcdf file """
@@ -234,10 +234,10 @@ class VolumeTransportObs(TransportObs):
         nc = Dataset(self.f)
         t = nc.variables['time']
         self.original_dates = num2date(t[:],units=t.units)
-        self.hh = np.array([dt.hour for dt in self.original_dates], dtype=np.int)
-        self.dd = np.array([dt.day for dt in self.original_dates], dtype=np.int)
-        self.mm = np.array([dt.month for dt in self.original_dates], dtype=np.int)
-        self.yy = np.array([dt.year for dt in self.original_dates], dtype=np.int)
+        self.hh = np.array([dt.hour for dt in self.original_dates], dtype=np.int32)
+        self.dd = np.array([dt.day for dt in self.original_dates], dtype=np.int32)
+        self.mm = np.array([dt.month for dt in self.original_dates], dtype=np.int32)
+        self.yy = np.array([dt.year for dt in self.original_dates], dtype=np.int32)
 
     def write_to_netcdf(self, ncfile):
         """ Write observation data to netcdf file """
@@ -361,12 +361,12 @@ class HeatTransportObs(TransportObs):
     def _read_dates(self):
         """ Read date information from file """
         dts = []
-        self.hh = np.array(self._readnc('hour'), dtype=np.int)
-        self.dd = np.array(self._readnc('day'), dtype=np.int)
-        self.mm = np.array(self._readnc('month'), dtype=np.int)
-        self.yy = np.array(self._readnc('year'), dtype=np.int)
+        self.hh = np.array(self._readnc('hour'), dtype=np.int32)
+        self.dd = np.array(self._readnc('day'), dtype=np.int32)
+        self.mm = np.array(self._readnc('month'), dtype=np.int32)
+        self.yy = np.array(self._readnc('year'), dtype=np.int32)
 
-        for ndt in xrange(len(self.hh)):
+        for ndt in range(len(self.hh)):
             dts.append(datetime.datetime(
                 self.yy[ndt], self.mm[ndt], self.dd[ndt], self.hh[ndt],0,0))
         
@@ -492,10 +492,10 @@ class FloridaCurrentObs(TransportObs):
         nc = Dataset(self.f)
         t = nc.variables['time']
         self.original_dates = num2date(t[:],units=t.units)
-        self.hh = np.array([dt.hour for dt in self.original_dates], dtype=np.int)
-        self.dd = np.array([dt.day for dt in self.original_dates], dtype=np.int)
-        self.mm = np.array([dt.month for dt in self.original_dates], dtype=np.int)
-        self.yy = np.array([dt.year for dt in self.original_dates], dtype=np.int)
+        self.hh = np.array([dt.hour for dt in self.original_dates], dtype=np.int32)
+        self.dd = np.array([dt.day for dt in self.original_dates], dtype=np.int32)
+        self.mm = np.array([dt.month for dt in self.original_dates], dtype=np.int32)
+        self.yy = np.array([dt.year for dt in self.original_dates], dtype=np.int32)
 
 
     def write_to_netcdf(self, ncfile):
