@@ -364,7 +364,7 @@ def create_netcdf(config, rapid_trans, model_trans, fc_trans,
     q_eddy.units = 'PW'
     q_eddy.minimum_longitude = wbw_maxlon
     q_eddy.maximum_longitude = int_maxlon
-    q_eddy.comment = 'Heat transport referenced to 0C by standing eddy component of geostrophic interior transport'
+    q_eddy.comment = 'Heat transport by standing eddy component of geostrophic interior transport'
     q_eddy[:] = (int_trans.oht_by_horizontal )/ 1e15
         
     # Heat transport by mid ocean
