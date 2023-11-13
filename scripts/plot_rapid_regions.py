@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import rapidmoc.sections as sections
 import rapidmoc.plotdiag as rapidplot
 
-matplotlib.use("TkAgg")
+matplotlib.use("tkAgg")
 
 def get_args():
     """   Get arguments from command line.  """
@@ -47,7 +47,8 @@ def main(configf, vfile, name):
     v = sections.ZonalSections(vfile, config, 'meridional_velocity')
     lons = v.x
     lat = np.mean(v.y)
-    z_scaled = -np.sqrt(np.abs(v.z))
+    #z_scaled = -np.sqrt(np.abs(v.z))
+    z_scaled = -np.abs(v.z)
     
     if len(v.data.shape) == 3:
         vdat = v.data[0]
@@ -59,7 +60,6 @@ def main(configf, vfile, name):
     zticks, zlabels = rapidplot.get_zscale_ticks()
     plt.pcolormesh(lons, z_scaled, vdat, vmin=vdat.min(), vmax=np.abs(vdat.min()),
                    cmap=plt.cm.RdBu_r)
-    
     for lon in [fc_minlon, fc_maxlon, wbw_maxlon]:
         plt.plot([lon, lon], [z_scaled.min(), z_scaled.max()], '-k', linewidth=2)
 
@@ -67,7 +67,7 @@ def main(configf, vfile, name):
     plt.xlim([fc_minlon-2, wbw_maxlon+2])
     plt.xlabel('Longitude')
     plt.ylabel('Depth (m)')
-    plt.yticks(zticks, zlabels)
+    #plt.yticks(zticks, zlabels)
     plt.title('Meridional velocity in %s (latitude=%4.1f)\n Black lines indicate position of fc_minlon, fc_maxlon, wbw_maxlon' % 
               (name, lat))
     plt.colorbar()
