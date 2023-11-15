@@ -6,8 +6,8 @@ zcoord = lev
 tcoord = time
 i1 = 29
 i2 = 99
-j1 = 261
-j2 = 262
+j1 = 260
+j2 = 260
 
 [salinity]
 var = so
@@ -17,8 +17,8 @@ zcoord = lev
 tcoord = time
 i1 = 29
 i2 = 99
-j1 = 261
-j2 = 262
+j1 = 260
+j2 = 260
 
 [meridional_velocity]
 var = vo
@@ -28,8 +28,8 @@ zcoord = lev
 tcoord = time
 i1 = 29
 i2 = 99
-j1 = 261
-j2 = 262
+j1 = 260
+j2 = 260
 
 [taux]
 var = tauuo
@@ -38,14 +38,14 @@ ycoord = latitude
 tcoord = time
 i1 = 29
 i2 = 99
-j1 = 261
-j2 = 262
+j1 = 260
+j2 = 260
 
 [observations] 
-heat_transports =../obs/rapid/moht/mocha_mht_data_ERA5_v2018_2.nc
-volume_transports =../obs/rapid/volume/moc_transports_v2020_2.nc
-streamfunctions =../obs/rapid/volume/moc_vertical_v2020_2.nc
-florida_current =../obs/florida_straits/FC_cable_transport_2000-2023.nc
+heat_transports =obs/rapid/moht/Johns_2023_mht_data_2020_ERA5/mocha_mht_data_ERA5_v2020.nc
+volume_transports =obs/rapid/volume/moc_transports_v2022_1.nc
+streamfunctions =obs/rapid/volume/moc_vertical_v2022_1.nc
+florida_current =obs/florida_straits/FC_cable_transport_2000-2023.nc
 time_avg =yearly
 
 [options]
@@ -61,6 +61,6 @@ reference_salinity = 35.17
 [output]
 date_format=%%Y%%m
 plot=False
-name=ssp585-eddy
-outdir=outdir/keyclim-v2/ssp585-eddy
+name=historical
+outdir=outdir/cmip6-66n/historical
 
