@@ -24,6 +24,7 @@ yearns+=(1989 1999 2009 2014)
 #KeyCLIM_CMOR=/projects/NS9252K/cmorout/NorESM2-MM/${expid}/${version}
 
 mip=cmip6-26n
+mip=cmip6-66n
 expid=historical
 version=v20191108
 KeyCLIM_CMOR=/projects/NS9034K/CMIP6/.cmorout/NorESM2-MM/${expid}/${version}
@@ -51,8 +52,8 @@ KeyCLIM_CMOR=/projects/NS9034K/CMIP6/.cmorout/NorESM2-MM/${expid}/${version}
 #version=v20230616
 #KeyCLIM_CMOR=/projects/NS9034K/CMIP6/.cmorout/NorESM2-MM/${expid}/${version}
 
-sed -i "65s+outdir=.*+outdir=outdir/$mip/${expid}+" ./etc/config.ini.keyclim
-sed -i "64s+name=.*+name=$expid+" ./etc/config.ini.keyclim
+sed -i "65s+outdir=.*+outdir=outdir/$mip/${expid}+" ./etc/config.ini.keyclim26n
+sed -i "64s+name=.*+name=$expid+" ./etc/config.ini.keyclim26n
 
 datapath=$KeyCLIM_CMOR
 outpath=~/projects/KeyCLIM/RapidMoc/outdir/${mip}/${expid}
@@ -60,14 +61,14 @@ outpath=~/projects/KeyCLIM/RapidMoc/outdir/${mip}/${expid}
 #
 mkdir -p $outpath
 rm -f filelist
-cp etc/config.ini.keyclim $outpath/
+cp etc/config.ini.keyclim26n $outpath/
 
 outputfiles=()
 for (( i = 0; i < ${#year1s[*]}; i++ )); do
   year1=${year1s[i]};yearn=${yearns[i]}
   yeartag=${year1}01-${yearn}12
   outputfiles+=(${expid}_${year1}-${yearn}_natl_meridional_transports_at_26N.nc)
-  ./run_rapidmoc.py ./etc/config.ini.keyclim \
+  ./run_rapidmoc.py ./etc/config.ini.keyclim26n \
     $datapath/thetao_Omon_NorESM2-MM_${expid}_r1i1p1f1_gr_${yeartag}.nc \
     $datapath/so_Omon_NorESM2-MM_${expid}_r1i1p1f1_gr_${yeartag}.nc \
     $datapath/tauuo_Omon_NorESM2-MM_${expid}_r1i1p1f1_gn_${yeartag}.nc \

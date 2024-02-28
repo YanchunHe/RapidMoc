@@ -1,0 +1,66 @@
+[temperature]
+var = thetao
+xcoord = longitude
+ycoord = latitude
+zcoord = lev
+tcoord = time
+i1 = 77
+i2 = 120
+j1 = 323
+j2 = 323
+
+[salinity]
+var = so
+xcoord = longitude
+ycoord = latitude
+zcoord = lev
+tcoord = time
+i1 = 77
+i2 = 120
+j1 = 323
+j2 = 323
+
+[meridional_velocity]
+var = vo
+xcoord = longitude
+ycoord = latitude
+zcoord = lev
+tcoord = time
+i1 = 77
+i2 = 120
+j1 = 323
+j2 = 323
+
+[taux]
+var = tauuo
+xcoord = longitude
+ycoord = latitude
+tcoord = time
+i1 = 77
+i2 = 120
+j1 = 323
+j2 = 323
+
+[observations] 
+heat_transports =obs/rapid/moht/Johns_2023_mht_data_2020_ERA5/mocha_mht_data_ERA5_v2020.nc
+volume_transports =obs/rapid/volume/moc_transports_v2022_1.nc
+streamfunctions =obs/rapid/volume/moc_vertical_v2022_1.nc
+florida_current =obs/florida_straits/FC_cable_transport_2000-2023.nc
+time_avg =yearly
+
+[options]
+georef_level = 3500
+ekman_depth = 50
+fc_minlon = -80.0
+fc_maxlon = -76.0
+wbw_maxlon = -71.0
+int_maxlon = 12.
+ek_profile_type = linear
+reference_salinity = 35.17
+
+[output]
+date_format=%%Y%%m
+plot=False
+name=historical
+outdir=outdir/cmip6-66n/historical
+
