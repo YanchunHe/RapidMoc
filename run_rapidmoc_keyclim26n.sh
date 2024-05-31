@@ -21,13 +21,17 @@ yearns+=(1989 1999 2009 2014)
 #version=v20230612
 #expid=hist-piAerOxid
 #version=v20210521
-#KeyCLIM_CMOR=/projects/NS9252K/cmorout/NorESM2-MM/${expid}/${version}
+#KeyCLIM_CMOR=/datalake/NS9252K/cmorout/NorESM2-MM/${expid}/${version}
 
 mip=cmip6-26n
-mip=cmip6-66n
 expid=historical
 version=v20191108
 KeyCLIM_CMOR=/projects/NS9034K/CMIP6/.cmorout/NorESM2-MM/${expid}/${version}
+
+#mip=cmip6-26n
+#expid=historical
+#version=v20191108
+#KeyCLIM_CMOR=/projects/NS9034K/CMIP6/.cmorout/NorESM2-MM/${expid}/${version}
 
 ## Scenario
 #year1s+=(2015)
