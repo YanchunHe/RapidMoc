@@ -1,0 +1,109 @@
+[temperature]
+var = templvl
+xcoord = plon
+ycoord = plat
+zcoord = depth
+tcoord = time
+i1 = 30
+i2 = 94
+j1 = 260
+j2 = 260
+maskf = temp.nc
+maskvar = templvl
+maskmdi = -32768
+
+[salinity]
+var = salnlvl
+xcoord = plon
+ycoord = plat
+zcoord = depth
+tcoord = time
+i1 = 30
+i2 = 94
+j1 = 260
+j2 = 260
+maskf = saln.nc
+maskvar = salnlvl
+maskmdi = -32768
+
+[meridional_velocity]
+var = vvellvl
+xcoord = vlon
+ycoord = vlat
+zcoord = depth
+tcoord = time
+i1 = 30
+i2 = 94
+j1 = 260
+j2 = 260
+maskf = RapidMoc_3000-3000_natl_meridional_transports_at_26N.nc
+maskvar = vvellvl
+maskmdi = -32768
+
+[taux]
+var = ztx
+xcoord = ulon
+ycoord = ulat
+tcoord = time
+i1 = 30
+i2 = 94
+j1 = 260
+j2 = 260
+maskf = NBF1850OC_ORGANIC1.micom.hm.3000-01.nc
+maskvar = ztx
+maskmdi = -32768
+
+[mass_flux_y_direction]
+var = vflx
+xcoord = vlon
+ycoord = vlat
+zcoord = sigma
+tcoord = time
+i1 = 30
+i2 = 94
+j1 = 260
+j2 = 260
+maskf = RapidMoc_3000-3000_natl_meridional_transports_at_26N.nc
+maskvar = vflx
+maskmdi = -32768
+
+[pressure_layer]
+var = dp
+xcoord = plon
+ycoord = plat
+zcoord = sigma
+tcoord = time
+i1 = 30
+i2 = 94
+j1 = 260
+j2 = 260
+maskf = RapidMoc_3000-3000_natl_meridional_transports_at_26N.nc
+maskvar = dp
+maskmdi = -32768
+
+
+
+
+[observations] 
+heat_transports =../obs
+volume_transports =C:\Users\Utilisateur\rapid\rapidmocobs_vol_trans\moc_transports_200404_20151011.nc
+streamfunctions =C:\Users\Utilisateur\rapid\rapidmoc\obs_streamfcn\moc_vertical_200404_2022215.nc
+florida_current =../obs/florida_straits/FC_cable_transport_2000-2021.nc
+time_avg =yearly
+
+[options]
+georef_level = 4740
+ekman_depth = 50
+fc_minlon = -80.0
+fc_maxlon = -75.0
+wbw_maxlon = -71.0
+int_maxlon = -10.
+ek_profile_type = linear
+reference_salinity = 35.17
+
+[output]
+date_format=%%Y%%m
+plot=False
+name=organic
+outdir=C:\Users\Utilisateur\rapid\rapidmoc
+
