@@ -5,12 +5,15 @@ Module holding code to work with ocean sections
 
 from math import radians, cos, sin, asin, sqrt
 from netCDF4 import MFTime, MFDataset, Dataset, num2date
+from scipy.ndimage import zoom
 import numpy as np
+import xarray as xr
 import copy
 import glob
 import pandas as pd
+import utils
+from transports import Transports 
 
-from . import utils
 
 class NetCDF4Error(Exception):
     pass
@@ -98,7 +101,7 @@ class ZonalSections(object):
             self._infill_coords()
                     
         self._apply_meridional_average()
-
+ 
     @property
     def cell_widths(self):
         """ Return width of cells along section """
@@ -120,7 +123,29 @@ class ZonalSections(object):
             return None
         else:
             return np.abs(np.diff(self.zbounds))
-                
+        
+    @property
+    def dpv(self):
+        """ Return width of cells in z direction """
+        if self.surface_field:
+            return None
+        else:
+            dp=xr.open_dataset('dp.nc')
+            val=dp.values
+            return val
+        if isinstance(self.dpv, np.ndarray):
+    # `self.dpv` est un tableau NumPy
+    # Vous pouvez effectuer des opérations d'indexation sur `self.dpv`
+            result = self.dpv[None, :, None]
+            print(result.shape)  # Assurez-vous que l'opération est valide
+
+        elif isinstance(self.dpv, (list, tuple)):
+    # `self.dpv` est une liste ou un tuple
+    # Vous pouvez également effectuer des opérations d'indexation sur `self.dpv`
+            result = np.array(self.dpv)[None, :, None]
+            print(result.shape)  # Assurez-vous que l'opération est valide
+
+    print('dpv', dpv)           
     @property
     def xbounds(self):
         """ Return estimated y coordinate bounds """
@@ -138,7 +163,7 @@ class ZonalSections(object):
             return None
         else:
             return self._get_zbounds(self.z)
-
+    
     @property 
     def mask(self):
         """ Return mask data """
@@ -167,7 +192,7 @@ class ZonalSections(object):
             return None
         else:
             return (np.ones_like(self.data) * self.z[None,:,None])
-
+        
     @property
     def z_as_bounds_data(self):
         """ Return z with same shape as self.bounds_data  """
@@ -175,7 +200,6 @@ class ZonalSections(object):
             return None
         else:
             return (np.ones_like(self.bounds_data) * self.z[None,:,None])
-
     @property
     def dz_as_data(self):
         """ Return dz with same shape as self.data  """
@@ -191,7 +215,22 @@ class ZonalSections(object):
             return None
         else:
             return (np.ones_like(self.bounds_data) * self.dz[None,:,None])
-            
+    
+    @property 
+    def dp_as_data(self):
+        if (self.surface_field) or (self.data is None):
+            return None
+        else:
+            return (np.ones_like(self.data) * self.dpv[None,:,None])
+    
+    @property 
+    def dp_as_bounds_data(self):
+        if (self.surface_field) or (self.bounds_data is None) or (self.dpv is None):
+            return None
+        else:
+            return (np.ones_like(self.bounds_data) * self.dpv[None,:,None])
+        
+    
     @property
     def cell_widths_as_data(self):
         """ Return cell_widths with same shape as self.data  """
@@ -305,7 +344,7 @@ class ZonalSections(object):
             except ValueError as err:
                 print('netcdf4.MFDataset incompatible with NETCDF4.'
                       'Try concatenating data into a single file.')
-                raise NetCDF4ERROR(err)
+                raise NetCDF4Error(err)
         else:
             nc = Dataset(f)
 
@@ -319,6 +358,7 @@ class ZonalSections(object):
             self.data = self.data.mean(axis=2)
         self.x = self.x.mean(axis=0)
         self.y = self.y.mean(axis=0)
+       
 
     def _update_data_mask(self, mask):
         """ Update mask information for section data """
@@ -377,33 +417,56 @@ class ZonalSections(object):
                 raise ShapeError('Section fields must have dimensions [t,z,y,x]')
         nc.close()        
 
-    def _read_xcoord(self):
-        """ Read longitude data in decimal degrees from netcdf file(s). """
-        nc = self._opennc(self.f)
-        ncvar = nc.variables[self.xcoord]
+    #def _read_xcoord(self):
+     #   """ Read longitude data in decimal degrees from netcdf file(s). """
+      #  nc = self._opennc(self.f)
+      #  ncvar = nc.variables[self.xcoord]
         
+      #  if ncvar.ndim == 2:
+       #     self.x = ncvar[self.j1:self.j2+1,self.i1:self.i2+1]
+            
+       # else:
+            # Dummy j-index for averaging
+        #    self.x = ncvar[self.i1:self.i2+1][np.newaxis] 
+    
+       # nc.close()
+        #Set range -180 to 180
+       # if self.x.max() > 180:
+        #    self.x[self.x > 180] = self.x[self.x > 180] - 360
+    def _read_xcoord(self):
+        """ Read longitude data in decimal degrees from grid.nc file(s). """
+        nc_grid = self._opennc('grid.nc')  # Ouvre le fichier grid.nc
+        ncvar = nc_grid.variables[self.xcoord]  
         if ncvar.ndim == 2:
             self.x = ncvar[self.j1:self.j2+1,self.i1:self.i2+1]
-            
         else:
-            # Dummy j-index for averaging
             self.x = ncvar[self.i1:self.i2+1][np.newaxis] 
+            # Accède à la variable plon dans grid.nc
+    # Effectue d'autres opérations nécessaires avec xcoord_var
+        nc_grid.close()
     
-        nc.close()
-
-        # Set range -180 to 180
-        if self.x.max() > 180:
-            self.x[self.x > 180] = self.x[self.x > 180] - 360
                 
+    #def _read_ycoord(self):
+     #   """ Read latitude data in decimal degrees from netcdf file(s) """
+      #  nc = self._opennc(self.f)
+       # ncvar = nc.variables[self.ycoord]
+       # if ncvar.ndim == 2:
+        #    self.y = ncvar[self.j1:self.j2+1,self.i1:self.i2+1]
+        #else:
+         #   self.y = ncvar[self.j1:self.j2+1][:,np.newaxis] * np.ones(self.i2-self.i1+1)[np.newaxis]
+        #nc.close()
     def _read_ycoord(self):
-        """ Read latitude data in decimal degrees from netcdf file(s) """
-        nc = self._opennc(self.f)
-        ncvar = nc.variables[self.ycoord]
+        """ Read longitude data in decimal degrees from grid.nc file(s). """
+        nc_grid = self._opennc('grid.nc')  # Ouvre le fichier grid.nc
+        ncvar = nc_grid.variables[self.ycoord] 
         if ncvar.ndim == 2:
             self.y = ncvar[self.j1:self.j2+1,self.i1:self.i2+1]
-        else:
+        
+        else: 
             self.y = ncvar[self.j1:self.j2+1][:,np.newaxis] * np.ones(self.i2-self.i1+1)[np.newaxis]
-        nc.close()
+             # Accède à la variable plon dans grid.nc
+    # Effectue d'autres opérations nécessaires avec xcoord_var
+        nc_grid.close()
         
     def _read_tcoord(self):
         """ Read time coordinate information from netcdf file(s) """
@@ -414,10 +477,10 @@ class ZonalSections(object):
             try:
                 dts = num2date(MFTime(t)[:], calendar=t.calendar, units=t.units)
                 self.dates = utils.convert_to_datetime(dts)
-            except:
+            except Exception as err:
                 print('netcdf4.MFTime incompatible with NETCDF4.'
                       'Try concatenating data into a single file.')
-                raise NetCDF4ERROR(err)
+                raise NetCDF4Error(err)
         else:
             dts = num2date(t[:], calendar=t.calendar, units=t.units)            
             self.dates = utils.convert_to_datetime(dts)
@@ -430,7 +493,12 @@ class ZonalSections(object):
             nc = self._opennc(self.f)
             self.z = np.abs(nc.variables[self.zcoord][:])
             nc.close()
+    #print('dz',dz)
+    #print('dpv',dpv)
 
+def resize_mask(mask, new_shape):
+    factors = (new_shape[0] / mask.shape[0], new_shape[1] / mask.shape[1], new_shape[2] / mask.shape[2])
+    return zoom(mask, factors, order=1)    
 
 def interpolate(s1, s2):
     """ Return data in s1 interpolated onto coordinates in s2 """
@@ -446,8 +514,27 @@ def interpolate(s1, s2):
     else:
         bounds_mask=s2.bounds_mask
         mask=s2.mask
-        
-    sinterp.data = np.ma.MaskedArray(s1.interp_along_section(dist, x0, y0), mask=mask)    
-    sinterp.bounds_data = np.ma.MaskedArray(s1.interp_along_section(dist_bounds, x0, y0), mask=bounds_mask)
+
+    interp_data = s1.interp_along_section(dist, x0, y0)
+    interp_bounds_data = s1.interp_along_section(dist_bounds, x0, y0)
+
+    # Vérifier les dimensions des masques et des données interpolées
+    #print(f"interp_data.shape: {interp_data.shape}")
+    #print(f"mask.shape: {mask.shape}")
+    #print(f"interp_bounds_data.shape: {interp_bounds_data.shape}")
+    #print(f"bounds_mask.shape: {bounds_mask.shape}")
+
+    # Ajuster les dimensions si nécessaire
+    if interp_data.shape != mask.shape:
+        factors = (mask.shape[0] / interp_data.shape[0], mask.shape[1] / interp_data.shape[1], mask.shape[2] / interp_data.shape[2])
+        interp_data = zoom(interp_data, factors, order=1)  # Interpolation linéaire
+
+    if interp_bounds_data.shape != bounds_mask.shape:
+        factors = (bounds_mask.shape[0] / interp_bounds_data.shape[0], bounds_mask.shape[1] / interp_bounds_data.shape[1], bounds_mask.shape[2] / interp_bounds_data.shape[2])
+        interp_bounds_data = zoom(interp_bounds_data, factors, order=1)  # Interpolation linéaire
+
+    # Créer les MaskedArray
+    sinterp.data = np.ma.MaskedArray(interp_data, mask=mask)
+    sinterp.bounds_data = np.ma.MaskedArray(interp_bounds_data, mask=bounds_mask)
 
     return sinterp

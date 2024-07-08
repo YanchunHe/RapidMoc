@@ -6,8 +6,7 @@ Module containing code to work with Rapid observational data
 from netCDF4 import Dataset, num2date, date2num
 import datetime
 import numpy as np
-
-from . import utils
+import utils
 
 class TransportObs(object):
     """ Template class to interface with observed ocean transports """
@@ -519,3 +518,4 @@ class FloridaCurrentObs(TransportObs):
         # Close file
         print('SAVING: %s' % ncfile)
         dataset.close()
+

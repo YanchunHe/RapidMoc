@@ -12,8 +12,8 @@ from matplotlib.colors import BoundaryNorm
 import numpy as np
 from scipy import stats
 
-from . import observations
-from . import utils
+
+import utils
 
 
 # COLORS 
@@ -25,17 +25,29 @@ MAX_NAME_LEN=15
 
 def plot_streamfunctions(trans, name='simulated', basename='', obs=None,lw=4):
     """ Plot time mean overturning stream functions"""
-
+    print('transvar', trans.variables)
     # Extract variables from data objects
-    z = trans.variables['depth'][:]
-    sf_rapid = trans.variables['sf_rapid'][:].mean(axis=0)
-    sf_model = trans.variables['sf_model'][:].mean(axis=0)
-    sfmax_rapid = sf_rapid.max()
-    zmax_rapid = z[np.argmax(sf_rapid)]
-    sfmax_model = sf_model.max()
-    zmax_model = z[np.argmax(sf_model)]
+    #z = trans.variables['pressure'][:]
+    z = trans.variables['pressure'][:]
+    #sf_rapid = trans.variables['sf_rapid'].mean(axis=0)
+    #sf_model = trans.variables['sf_model'].mean(axis=0)
 
-    # Create labels
+    sf_rapid = trans.variables['sf_rapid'][:]
+    sf_rap_moy= np.mean(sf_rapid,axis=0)
+
+    sf_model = trans.variables['sf_model'][:]
+    sf_mod_moy= np.mean(sf_model, axis=0)
+
+    #sfmax_rapid = sf_rapid.max()
+    sfmax_rapid = sf_rap_moy.max()
+    #zmax_rapid = z[np.argmax(sf_rapid)]
+    zmax_rapid = z[np.argmax(sf_rap_moy)]
+    #sfmax_model = sf_model.max()
+    sfmax_model = sf_mod_moy.max()
+    #zmax_model = z[np.argmax(sf_model)]
+    zmax_model = z[np.argmax(sf_mod_moy)]
+
+    # Create labels 
     model_label = ('%s (model velocities) (max=%4.1f Sv, depth=%6i m)' %
                  (name, sfmax_model, zmax_model))
     rapid_label = ('%s (RAPID approx) (max=%4.1f Sv, depth=%6i m)' %
@@ -43,8 +55,8 @@ def plot_streamfunctions(trans, name='simulated', basename='', obs=None,lw=4):
 
     # Add data to axis
     fig = plt.figure(figsize=(6,8))
-    plt.plot(sf_model, -z,'-', color=c1, linewidth=lw, label=model_label)
-    plt.plot(sf_rapid, -z,'-', linewidth=lw, color=c2, label=rapid_label)
+    plt.plot(sf_mod_moy, z,'-', color=c1, linewidth=lw, label=model_label)
+    plt.plot(sf_rap_moy, z,'-', linewidth=lw, color=c2, label=rapid_label)
 
     # Plot optional observational data
     if obs is not None:
@@ -60,11 +72,12 @@ def plot_streamfunctions(trans, name='simulated', basename='', obs=None,lw=4):
     plt.title('Atlantic overturning streamfunction at 26N')
     plt.xlabel('Sverdrups')
     plt.ylabel('Depth (m)')
+    plt.gca().invert_yaxis()
     plt.legend(loc='best', fontsize=8)   
 
     # Save plot
     plt.tight_layout()
-    savef = basename + 'overturning_streamfunctions_at_26n.png'
+    savef = basename + 'overturning_streamfunctions_at_26n_v.png'
     print('SAVING: %s' % savef)
     fig.savefig(savef, dpi=300)
     plt.close()
@@ -969,6 +982,8 @@ def plot_rapid_fw_components(trans, basename='', name='simulated', obs=None,lw=4
     plt.ylabel('Sv')
     plt.title('Equivalent FW transports at 26N in %s'  % name)
     plt.legend(loc=8, fontsize=8, ncol=2)
+   
+   
 
 
     # Add observational data to sub-axis
