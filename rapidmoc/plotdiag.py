@@ -55,8 +55,8 @@ def plot_streamfunctions(trans, name='simulated', basename='', obs=None,lw=4):
 
     # Add data to axis
     fig = plt.figure(figsize=(6,8))
-    plt.plot(sf_mod_moy, -z*1e-4,'-', color=c1, linewidth=lw, label=model_label) #conversion in bar then depth
-    plt.plot(sf_rap_moy, -z*1e-4,'-', linewidth=lw, color=c2, label=rapid_label)
+    plt.plot(sf_mod_moy, -z,'-', color=c1, linewidth=lw, label=model_label) 
+    plt.plot(sf_rap_moy, -z,'-', linewidth=lw, color=c2, label=rapid_label)
 
     # Plot optional observational data
     if obs is not None:
@@ -71,7 +71,7 @@ def plot_streamfunctions(trans, name='simulated', basename='', obs=None,lw=4):
     # Annotate plot
     plt.title('Atlantic overturning streamfunction at 26N')
     plt.xlabel('Sverdrups')
-    plt.ylabel('Depth (m)')
+    plt.ylabel('Pressure (m)')
     plt.gca().invert_yaxis()
     plt.legend(loc='best', fontsize=8)   
 
