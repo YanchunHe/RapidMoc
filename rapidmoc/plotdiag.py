@@ -29,8 +29,6 @@ def plot_streamfunctions(trans, name='simulated', basename='', obs=None,lw=4):
     # Extract variables from data objects
     #z = trans.variables['pressure'][:]
     z = trans.variables['pressure'][:]
-    #sf_rapid = trans.variables['sf_rapid'].mean(axis=0)
-    #sf_model = trans.variables['sf_model'].mean(axis=0)
 
     sf_rapid = trans.variables['sf_rapid'][:]
     sf_rap_moy= np.mean(sf_rapid,axis=0)
@@ -38,13 +36,13 @@ def plot_streamfunctions(trans, name='simulated', basename='', obs=None,lw=4):
     sf_model = trans.variables['sf_model'][:]
     sf_mod_moy= np.mean(sf_model, axis=0)
 
-    #sfmax_rapid = sf_rapid.max()
+    
     sfmax_rapid = sf_rap_moy.max()
-    #zmax_rapid = z[np.argmax(sf_rapid)]
+    
     zmax_rapid = z[np.argmax(sf_rap_moy)]
-    #sfmax_model = sf_model.max()
+    
     sfmax_model = sf_mod_moy.max()
-    #zmax_model = z[np.argmax(sf_model)]
+    
     zmax_model = z[np.argmax(sf_mod_moy)]
 
     # Create labels 
@@ -55,8 +53,8 @@ def plot_streamfunctions(trans, name='simulated', basename='', obs=None,lw=4):
 
     # Add data to axis
     fig = plt.figure(figsize=(6,8))
-    plt.plot(sf_mod_moy, -z,'-', color=c1, linewidth=lw, label=model_label) 
-    plt.plot(sf_rap_moy, -z,'-', linewidth=lw, color=c2, label=rapid_label)
+    plt.plot(sf_mod_moy, z,'-', color=c1, linewidth=lw, label=model_label) 
+    plt.plot(sf_rap_moy, z,'-', linewidth=lw, color=c2, label=rapid_label)
 
     # Plot optional observational data
     if obs is not None:

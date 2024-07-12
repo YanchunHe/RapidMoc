@@ -8,10 +8,12 @@ from netCDF4 import Dataset, date2num
 import numpy as np
 import os
 import xarray as xr
+from scipy.interpolate import interp1d
 
 import utils
-dp= xr.open_dataset('dp.nc')
-          
+#dp= xr.open_dataset('dp.nc')
+data = xr.open_dataset('RapidMoc_3000-3000_natl_meridional_transports_at_26N.nc')
+dp = data['dp']         
 def open_ncfile(config, dates):
     """ Return handle for netcdf file """
     outdir = config.get('output', 'outdir')
@@ -54,11 +56,10 @@ def create_netcdf(config, rapid_trans, model_trans, fc_trans,
     # Create netcdf file and add dimensions
     dataset = open_ncfile(config, rapid_trans.dates)
     zdim = dataset.createDimension('depth', rapid_trans.z.size)
-    pdim= dataset.createDimension('dp_sigma', dp['sigma'].size)
-    #print('rap_size', rapid_trans)
+    pdim= dataset.createDimension('dp_sigma', rapid_trans.z_.size)
     tdim = dataset.createDimension('time', None)
-    #a=os.path.getsize('dp.nc')
-    #dpdim = dataset.createDimension('pressure_layer',dp['dp'].shape) 
+    
+     
     # Create time coordinate
     time = dataset.createVariable('time',np.float64,(tdim.name,))
     time.units = 'hours since 0001-01-01 00:00:00.0'
@@ -69,28 +70,32 @@ def create_netcdf(config, rapid_trans, model_trans, fc_trans,
     z = dataset.createVariable('depth',np.float64,(zdim.name,))
     z.units = 'm'
     z[:] = rapid_trans.z
-
-    print('z',z)
+    
     
     p = dataset.createVariable('pressure',np.float64,(pdim.name,))
     p.units = 'Pa'
-    p0= 101325
-    pv = p0 - dp.cumsum(dim='sigma')
-    pvv= pv.mean(dim=['x','y']).isel(time=0)
-    print('pvv',pvv)
-    print('pvv.shape', pvv.values)
-    print('pv_val', pv.values)
-    p[:]=pvv['dp']
+    sigma_th= np.array(rapid_trans.z_)
+    depth = np.array(rapid_trans.z)
+
+#  determine depth with sigma theta
+    interp_sig = interp1d(np.linspace(0, 1, len(sigma_th)), sigma_th, kind='linear', fill_value='extrapolate')
+    depth_norm = np.linspace(0, 1, len(depth))
+    sig = interp_sig(depth_norm)
+    sigma_th_flx= sigma_th
+# inversed interpolation to find depth corresponding to  sigma_th_flx
+    inv_interp = interp1d(sig, depth, kind='linear', fill_value='extrapolate')
+    depth_estimed = inv_interp(sigma_th_flx)
+    p[:]=depth_estimed[:]
     
-
-
-    print('p',p.shape)
-    #print('z',z)
     
     # Create depth coordinate 
     dz = dataset.createVariable('level_thickness',np.float64,(zdim.name,))
     dz.units = 'm'
     dz[:] = rapid_trans.dz
+
+    #dp = dataset.createVariable('pressure_thickness',np.float64,(pdim.name,))
+    #dp.units = 'm'
+    #dp[:] = rapid_trans.dp
     
     #create pressure layer coordinate
     #dpv = dataset.createVariable('pressure-layer',np.float32,(dpdim.name,))
@@ -299,12 +304,12 @@ def create_netcdf(config, rapid_trans, model_trans, fc_trans,
     # q_sum_rapid[:] = rapid_trans.oht_total / 1e15
         
     # # Gyre heat transport - RAPID approx
-    # q_gyre_rapid = dataset.createVariable('q_gyre_rapid',np.float64,(tdim.name))
-    # q_gyre_rapid.units = 'PW'
-    # q_gyre_rapid.minimum_longitude = fc_minlon
-    # q_gyre_rapid.maximum_longitude = int_maxlon
-    # q_gyre_rapid.comment = 'Heat transport by the horizontal circulation calculated using RAPID approximations '
-    # q_gyre_rapid[:] = rapid_trans.oht_by_horizontal / 1e15
+    q_gyre_rapid = dataset.createVariable('q_gyre_rapid',np.float64,(tdim.name))
+    q_gyre_rapid.units = 'PW'
+    q_gyre_rapid.minimum_longitude = fc_minlon
+    q_gyre_rapid.maximum_longitude = int_maxlon
+    q_gyre_rapid.comment = 'Heat transport by the horizontal circulation calculated using RAPID approximations '
+    q_gyre_rapid[:] = rapid_trans.oht_by_horizontal / 1e15
     
     # # Overturning heat transport - RAPID approx
     # q_ot_rapid = dataset.createVariable('q_ot_rapid',np.float64,(tdim.name))
@@ -526,3 +531,4 @@ def create_netcdf(config, rapid_trans, model_trans, fc_trans,
 
     return dataset
     
+            

@@ -67,22 +67,6 @@ maskf = RapidMoc_3000-3000_natl_meridional_transports_at_26N.nc
 maskvar = vflx
 maskmdi = -32768
 
-[pressure_layer]
-var = dp
-xcoord = plon
-ycoord = plat
-zcoord = sigma
-tcoord = time
-i1 = 30
-i2 = 94
-j1 = 260
-j2 = 260
-maskf = RapidMoc_3000-3000_natl_meridional_transports_at_26N.nc
-maskvar = dp
-maskmdi = -32768
-
-
-
 
 [observations] 
 heat_transports =../obs

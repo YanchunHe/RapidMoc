@@ -42,8 +42,9 @@ class Transports(object):
         self.sref = sref                        
         self.x = vflx.x[minind:maxind]        
         self.y = vflx.y[minind:maxind]
+        self.z_ = vflx.z
         self.dz_as_data_vflx = vflx.dz_as_data[:,:,minind:maxind] 
-       
+        
         self.dates = vflx.dates
                          
         #self.dp_as_data = vflx.dp_as_data[:,:,minind:maxind] 
@@ -56,6 +57,7 @@ class Transports(object):
         self.name_ = v.name
         self.v = v.data[:,:,minind:maxind]
         self.z = v.z
+
         self.dz = v.dz  
         self.dz_as_data_v= v.dz_as_data[:,:,minind:maxind] 
         self.dx_as_data_v=v.cell_widths_as_data[:,:,minind:maxind]
@@ -156,6 +158,7 @@ class Transports(object):
         if self._avg_v is None:
             self._avg_v = self.section_avg(self.v) 
         return self._avg_v 
+    
     @property
     def avg_vflx(self):
         """ Return section average mass flux in y direction"""
@@ -177,6 +180,7 @@ class Transports(object):
     def vflx_no_net(self):
         """ Return mass flux after removing net transport through section """
         if self._vflx_no_net is None:
+           
             self._vflx_no_net = self.vflx - self.avg_vflx[:,np.newaxis,np.newaxis]
         return self._vflx_no_net
 
@@ -412,8 +416,10 @@ def calc_transports_from_sections(config, vflx,v, tau, t_on_vflx, s_on_vflx, t_o
     model_trans = Transports(v,vflx, t_on_vflx, s_on_vflx, fcmin, intmax, sref=sref)      # Total section transports using model massflx
     rapid_trans = Transports(vrapid, vflx,t_on_vflx, s_on_vflx, fcmin, intmax, sref=sref)
     
-    print('ek_trans', ek_trans.streamfunction.shape)
-    print('rapid_trans', rapid_trans.streamfunction.shape) # Total section transports using RAPID approximation
+    #print('model_trans', model_trans.streamfunction)
+    #print('rapid_trans', vars(rapid_trans))
+    #print('rapid_trans', rapid_trans.z_)
+    #print('rapid_trans', rapid_trans.streamfunction) # Total section transports using RAPID approximation
 #changer rapid_trans ou pas ? car s'appuie sur vitesse 
     # Create netcdf object for output/plotting
     trans = output.create_netcdf(config,rapid_trans, model_trans, fc_trans, 
