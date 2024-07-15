@@ -6,13 +6,13 @@ Module containing code to work with ocean transports
 import numpy as np
 import copy
 
-import output
-import utils
+from . import output
+from . import utils
 
 import xarray as xr
-grid = xr.open_dataset('grid.nc')
-plon = grid['plon']
-plat= grid['plat']
+#grid = xr.open_dataset('grid.nc')
+#plon = grid['plon']
+#plat= grid['plat']
 #data = xr.open_dataset('RapidMoc_3000-3000_natl_meridional_transports_at_26N.nc')
 
 # Constants
@@ -30,8 +30,8 @@ class Transports(object):
         """ Initialize with velocity and temperature sections """
         
         # Initialize data
-        print('minind',minind)
-        print('maxind',maxind)
+        #print('minind',minind)
+        #print('maxind',maxind)
         self.name = vflx.name
         self.vflx = vflx.data[:,:,minind:maxind] 
         #self.t = t_on_vflx.data[:,:,minind:maxind]
@@ -52,7 +52,7 @@ class Transports(object):
         self.dx_as_data_vflx = vflx.cell_widths_as_data[:,:,minind:maxind]
     
 
-        print('t_on_vflx.data.shape',t_on_vflx.data.shape)
+        #print('t_on_vflx.data.shape',t_on_vflx.data.shape)
 
         self.name_ = v.name
         self.v = v.data[:,:,minind:maxind]
@@ -64,7 +64,7 @@ class Transports(object):
                    
         self.dz_as_data = v.dz_as_data[:,:,minind:maxind]
         self.da_v = self.dx_as_data_v * self.dz_as_data_v
-        print('da', self.da_v.shape)
+        #print('da', self.da_v.shape)
         self.da_vflx = self.dx_as_data_vflx* self.dz_as_data_vflx
 
         #Set null values for property attributes
@@ -108,6 +108,12 @@ class Transports(object):
     
     def section_avg_vflx(self, data, total=False):
         """ Return avg across whole section """
+        #if data is None:
+            #print("data type is None")
+            #return
+         #if self.avg_vflx is None:
+            #raise ValueError("avg_vflx is None, cannot compute vflx_no_net.")
+
         if total:
             return (data * self.da_vflx).sum(axis=(1,2)) 
         else:
@@ -216,6 +222,7 @@ class Transports(object):
     def vflx_no_net(self):
         """Retern mass flux after removing net transport through setion"""
         if self._vflx_no_net is None:
+            print(type(self.avg_vflx))
             self._vflx_no_net = self.vflx - self.avg_vflx[:,np.newaxis, np.newaxis]
         return self._vflx_no_net
 
@@ -416,11 +423,6 @@ def calc_transports_from_sections(config, vflx,v, tau, t_on_vflx, s_on_vflx, t_o
     model_trans = Transports(v,vflx, t_on_vflx, s_on_vflx, fcmin, intmax, sref=sref)      # Total section transports using model massflx
     rapid_trans = Transports(vrapid, vflx,t_on_vflx, s_on_vflx, fcmin, intmax, sref=sref)
     
-    #print('model_trans', model_trans.streamfunction)
-    #print('rapid_trans', vars(rapid_trans))
-    #print('rapid_trans', rapid_trans.z_)
-    #print('rapid_trans', rapid_trans.streamfunction) # Total section transports using RAPID approximation
-#changer rapid_trans ou pas ? car s'appuie sur vitesse 
     # Create netcdf object for output/plotting
     trans = output.create_netcdf(config,rapid_trans, model_trans, fc_trans, 
                                  wbw_trans, int_trans, ek_trans)
@@ -452,7 +454,7 @@ def calc_dh(t_on_v, s_on_v):
     # #we integrate for each pressure layer the anormal density value
     dh.bounds_data = np.cumsum((rho_anom * rho.dz_as_bounds_data)[:,::-1,:],
                                axis=1)[:,::-1,:]
-    print('dh',dh)
+    #print('dh',dh)
 
     return dh
 

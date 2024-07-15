@@ -13,7 +13,7 @@ import numpy as np
 from scipy import stats
 
 
-import utils
+from . import utils
 
 
 # COLORS 
@@ -25,7 +25,7 @@ MAX_NAME_LEN=15
 
 def plot_streamfunctions(trans, name='simulated', basename='', obs=None,lw=4):
     """ Plot time mean overturning stream functions"""
-    print('transvar', trans.variables)
+    #print('transvar', trans.variables)
     # Extract variables from data objects
     #z = trans.variables['pressure'][:]
     z = trans.variables['pressure'][:]

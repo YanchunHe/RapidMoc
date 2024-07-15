@@ -1,29 +1,29 @@
 [temperature]
-var = templvl
+var = temp
 xcoord = plon
 ycoord = plat
-zcoord = depth
+zcoord = sigma
 tcoord = time
 i1 = 30
 i2 = 94
 j1 = 260
 j2 = 260
-maskf = ./data/micom.hy.3000-3150.nc
-maskvar = templvl
+maskf = ./hy.3d.nc
+maskvar = temp
 maskmdi = -32768
 
 [salinity]
-var = salnlvl
+var = saln
 xcoord = plon
 ycoord = plat
-zcoord = depth
+zcoord = sigma
 tcoord = time
 i1 = 30
 i2 = 94
 j1 = 260
 j2 = 260
-maskf = ./data/micom.hy.3000-3150.nc
-maskvar = salnlvl
+maskf = ./hy.3d.nc
+maskvar = saln
 maskmdi = -32768
 
 [meridional_velocity]
@@ -36,7 +36,7 @@ i1 = 30
 i2 = 94
 j1 = 260
 j2 = 260
-maskf = ./data/micom.hy.3000-3150.nc
+maskf = ./hy.3d.nc
 maskvar = vvellvl
 maskmdi = -32768
 
@@ -49,9 +49,40 @@ i1 = 30
 i2 = 94
 j1 = 260
 j2 = 260
-maskf = ./data/micom.hm.3000-3150.nc
+maskf = ./hm.2d.nc
 maskvar = ztx
 maskmdi = -32768
+
+[mass_flux_y_direction]
+var = vflx
+xcoord = vlon
+ycoord = vlat
+zcoord = sigma
+tcoord = time
+i1 = 30
+i2 = 94
+j1 = 260
+j2 = 260
+maskf = ./hy.3d.nc
+maskvar = vflx
+maskmdi = -32768
+
+[pressure_layer]
+var = dp
+xcoord = plon
+ycoord = plat
+zcoord = sigma
+tcoord = time
+i1 = 30
+i2 = 94
+j1 = 260
+j2 = 260
+maskf = ./dp.nc
+maskvar = dp
+maskmdi = -32768
+
+
+
 
 [observations] 
 heat_transports =../obs/rapid/moht/mocha_mht_data_ERA5_v2018_2.nc
@@ -71,8 +102,8 @@ ek_profile_type = linear
 reference_salinity = 35.17
 
 [output]
-date_format=%Y%m
+date_format=%%Y%%m
 plot=False
-name=organic
-outdir=/tos-project2/NS9015K/www/output/organic/NBF1850OC_ORGANIC1/rapidmoc2021
+name=RapidMoc
+outdir=/projects/NS9015K/www/output/organic/NBF1850OC_ORGANIC1/rapidmoc2024
 

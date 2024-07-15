@@ -11,8 +11,9 @@ import xarray as xr
 import copy
 import glob
 import pandas as pd
-import utils
-from transports import Transports 
+from . import utils
+#from transports import Transports 
+#from . import transports
 
 
 class NetCDF4Error(Exception):
@@ -145,7 +146,7 @@ class ZonalSections(object):
             result = np.array(self.dpv)[None, :, None]
             print(result.shape)  # Assurez-vous que l'opération est valide
 
-    print('dpv', dpv)           
+    #print('dpv', dpv)           
     @property
     def xbounds(self):
         """ Return estimated y coordinate bounds """

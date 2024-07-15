@@ -6,7 +6,7 @@ Module containing code to work with Rapid observational data
 from netCDF4 import Dataset, num2date, date2num
 import datetime
 import numpy as np
-import utils
+from . import utils
 
 class TransportObs(object):
     """ Template class to interface with observed ocean transports """

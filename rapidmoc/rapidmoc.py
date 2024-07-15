@@ -3,7 +3,6 @@ Module containing main routines to execute RapidMoc
 
 """
 
-
 import argparse
 import configparser
 import copy
@@ -11,11 +10,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import xarray as xr
 
-import utils
-import sections
-import transports
-import observations
-import plotdiag
+from . import utils
+from . import sections
+from . import transports
+from . import observations
+from . import plotdiag
 
 
 
@@ -130,7 +129,7 @@ def main():
     
     t_on_vflx = sections.interpolate(t,vflx)
     s_on_vflx = sections.interpolate(s,vflx)
-    print('t_on_vflx', t_on_vflx.data.shape)
+    #print('t_on_vflx', t_on_vflx.data.shape)
     
     # Return integrated transports on RAPID section as netcdf object
     #trans = transports_test.calc_transports_from_sections(

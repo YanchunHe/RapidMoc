@@ -10,19 +10,20 @@ set -e
 #SBATCH --ntasks-per-node=32
 #SBATCH --cpus-per-task=1
 
-module load NCO/4.6.6-intel-2017a
-module load Python/2.7.13-intel-2017a
+module purge
+module load NCO/5.0.3-intel-2021b
+#module load Python/3.9.6-GCCcore-11.2.0
+#module load matplotlib/3.4.3-intel-2021b
+#module load xarray/2022.6.0-foss-2022a
 
 CASE=NBF1850OC_ORGANIC1
 
-yyyy1=1001
-yyyy2=3150
-yyyy1=2613
-yyyy2=2613
+yyyy1=3000
+yyyy2=3009
 
-datapath=/tos-project2/NS9015K/yanchun/archive/NBF1850OC_ORGANIC1/ocn/hist
-outpath=/tos-project2/NS9015K/www/output/organic/NBF1850OC_ORGANIC1/rapidmoc2021
-outpath2=/tos-project2/NS9015K/www/output/rapidmoc/NBF1850OC_ORGANIC1/2021
+datapath=/scratch/yanchun/ORGANIC/NBF1850OC_ORGANIC1/ocn/hist
+outpath=/projects/NS9015K/www/output/organic/NBF1850OC_ORGANIC1/rapidmoc2024
+outpath2=/projects/NS9015K/www/output/rapidmoc/NBF1850OC_ORGANIC1/2024
 
 mkdir -p $outpath $outpath2
 rm -f filelist
@@ -35,12 +36,12 @@ for (( yr = $yyyy1; yr <= $yyyy2; yr++ )); do
 
     if [ ! -f ${outpath}/${annual_file} ]; then
         sed -i "74s/date_format=.*/date_format=%Y/" ./etc/config.ini.organic
-        ncks -h -O -v templvl,salnlvl,vvellvl ${datapath}/NBF1850OC_ORGANIC1.micom.hy.${yr}.nc ./hy.3d.nc
+        ncks -h -O -v temp,saln,vflx,vvellvl ${datapath}/NBF1850OC_ORGANIC1.micom.hy.${yr}.nc ./hy.3d.nc
         ncks -h -O -v ztx ${datapath}/NBF1850OC_ORGANIC1.micom.hm.${yr}-01.nc ./hm.2d.nc
-        ncks -h -A -v plat,plon,vlat,vlon ~/tools/data/grid_tnx1v1.nc ./hy.3d.nc
-        ncks -h -A -v ulat,ulon ~/tools/data/grid_tnx1v1.nc ./hm.2d.nc
+        ncks -h -A -v plat,plon,vlat,vlon ~/tools/data/tnx1v1/grid.nc4 ./hy.3d.nc
+        ncks -h -A -v ulat,ulon ~/tools/data/tnx1v1/grid.nc4 ./hm.2d.nc
 
-        ./run_rapidmoc.py ./etc/config.ini.organic ./hy.3d.nc ./hy.3d.nc ./hm.2d.nc ./hy.3d.nc
+        ./run_rapidmoc.py ./etc/config.ini.organic ./hy.3d.nc ./hy.3d.nc ./hm.2d.nc ./hy.3d.nc ./hy.3d.nc ./dp.nc
         
         # use ekman transport calculated by monthly wind stress to overide ekman transport by yearly ztx
         sed -i "74s/date_format=.*/date_format=%Y%m/" ./etc/config.ini.organic
@@ -48,14 +49,14 @@ for (( yr = $yyyy1; yr <= $yyyy2; yr++ )); do
             month_file=RapidMoc_${yr}${mon}-${yr}${mon}_natl_meridional_transports_at_26N.nc
             if [[ ! -f ${outpath}/${month_file} ]]; then
                 ncks -h -O -v ztx ${datapath}/NBF1850OC_ORGANIC1.micom.hm.${yr}-${mon}.nc ./hm.2d.nc
-                ncks -h -A -v ulat,ulon ~/tools/data/grid_tnx1v1.nc ./hm.2d.nc
+                ncks -h -A -v ulat,ulon ~/tools/data/tnx1v1/grid.nc4 ./hm.2d.nc
                 ncks -h -A -v time ./hm.2d.nc ./hy.3d.nc
                 echo "run on monthly file $month_file "
-                ./run_rapidmoc.py ./etc/config.ini.organic ./hy.3d.nc ./hy.3d.nc ./hm.2d.nc ./hy.3d.nc
+                ./run_rapidmoc.py ./etc/config.ini.organic ./hy.3d.nc ./hy.3d.nc ./hm.2d.nc ./hy.3d.nc ./hy.3d.nc ./dp.nc
             fi
         done
 
-        ncra -h -A -v ekman,sf_ek,q_ek,fw_ek ${outpath}/RapidMoc_${yr}??-${yr}??_natl_meridional_transports_at_26N.nc ${outpath}/${annual_file}
+        ncra -h -A -v ekman,sf_ek,q_ek,fw_ek ${outpath}/RapidMoc_${yr}*-${yr}*_natl_meridional_transports_at_26N.nc ${outpath}/${annual_file}
         ncap2 -O -s 'fw_sum_rapid=fw_fc+fw_ek+fw_mo' ${outpath}/${annual_file} ${outpath}/${annual_file}
         ncap2 -O -s 'q_sum_rapid=q_fc+q_ek+q_mo' ${outpath}/${annual_file} ${outpath}/${annual_file}
         #rm -f ${outpath}/RapidMoc_${yr}??-${yr}??_natl_meridional_transports_at_26N.nc
@@ -66,5 +67,8 @@ for (( yr = $yyyy1; yr <= $yyyy2; yr++ )); do
 done
 
 cat filelist |ncrcat -h -O --output=${outpath}/RapidMoc_${yyyy1}-${yyyy2}_natl_meridional_transports_at_26N.nc
-cat filelist |mv -t $outpath2/
+for fname in $(cat filelist)
+do
+  mv $fname -t $outpath2/
+done
 
