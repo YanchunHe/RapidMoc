@@ -42,12 +42,9 @@ class Transports(object):
         self.sref = sref                        
         self.x = vflx.x[minind:maxind]        
         self.y = vflx.y[minind:maxind]
-        self.z_ = vflx.z
+        self.z = vflx.z
         self.dz_as_data_vflx = vflx.dz_as_data[:,:,minind:maxind] 
-        
         self.dates = vflx.dates
-                         
-        #self.dp_as_data = vflx.dp_as_data[:,:,minind:maxind] 
         self.dx = vflx.cell_widths
         self.dx_as_data_vflx = vflx.cell_widths_as_data[:,:,minind:maxind]
     
@@ -56,9 +53,9 @@ class Transports(object):
 
         self.name_ = v.name
         self.v = v.data[:,:,minind:maxind]
-        self.z = v.z
+        self.z_ = v.z
 
-        self.dz = v.dz  
+        self.dz_ = v.dz  
         self.dz_as_data_v= v.dz_as_data[:,:,minind:maxind] 
         self.dx_as_data_v=v.cell_widths_as_data[:,:,minind:maxind]
                    
@@ -168,11 +165,17 @@ class Transports(object):
     @property
     def avg_vflx(self):
         """ Return section average mass flux in y direction"""
+        #if self._avg_vflx is None:
+            #self._avg_flx = self.section_avg_vflx(self.vflx)
+        #return self._avg_vflx
+
         if self._avg_vflx is None:
-            self._avg_flx = self.section_avg_vflx(self.vflx)
+            if self.vflx is None:
+                raise ValueError("self.vflx is not initialized")
+            self._avg_vflx = self.section_avg_vflx(self.vflx)
+            if self._avg_vflx is None:
+                raise ValueError("section_avg_vflx returned None")
         return self._avg_vflx
-
-
 
 
     @property
@@ -330,7 +333,7 @@ class Transports(object):
         """ Return heat transport by local overturning circulation """
         if self._oht_by_overturning is None:
             self._oht_by_overturning = (self.zonal_sum_vflx_no_net * self.zonal_avg_t *
-                    self.dp[np.newaxis,:,:,:]).sum(axis=1) * self.cp
+                    self.dz[np.newaxis,:]).sum(axis=1) * self.cp
         return self._oht_by_overturning   
 
     @property
@@ -360,7 +363,7 @@ class Transports(object):
         """ Retun freshwater transport by local overturning circulation """
         if self._oft_by_overturning is None:
             self._oft_by_overturning = (self.zonal_sum_vflx_no_net * self.zonal_avg_s *
-                    self.dp[np.newaxis,:,:,:]).sum(axis=1) * (-1.0/self.sref)
+                    self.dz[np.newaxis,:]).sum(axis=1) * (-1.0/self.sref)
         return self._oft_by_overturning   
 
 

@@ -34,8 +34,8 @@ def get_args():
         'vfile', type=str, help='Path for netcdf file(s) containing meridional velocity data.')
     parser.add_argument(
         'vflxfile', type=str, help='Path for netcdf file(s) containing mass flux in y direction data.')
-    parser.add_argument(
-        'dpfile',type=str, help = 'Path for netctdf file containing pressure layer')
+    #parser.add_argument(
+       # 'dpfile',type=str, help = 'Path for netctdf file containing pressure layer')
     parser.add_argument(
         '--name', help='Name used in output files. Overrides value in config file.', default=None)
     parser.add_argument(
@@ -122,7 +122,7 @@ def main():
     v = sections.ZonalSections(args.vfile, config, 'meridional_velocity')
     ## adding data to claculate the transport with mass flux 
     vflx = sections.ZonalSections(args.vflxfile, config, 'mass_flux_y_direction')
-    dp = sections.ZonalSections(args.dpfile, config, 'pressure_layer')
+    #dp = sections.ZonalSections(args.dpfile, config, 'pressure_layer')
     # Interpolate T & S data onto v-grid
     t_on_v = sections.interpolate(t,v)
     s_on_v = sections.interpolate(s,v)

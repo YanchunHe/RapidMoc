@@ -59,7 +59,8 @@ def create_netcdf(config, rapid_trans, model_trans, fc_trans,
     # Create netcdf file and add dimensions
     dataset = open_ncfile(config, rapid_trans.dates)
     zdim = dataset.createDimension('depth', rapid_trans.z.size)
-    pdim= dataset.createDimension('dp_sigma', rapid_trans.z_.size)
+    zdim_ = dataset.createDimension('depth_v', rapid_trans.z_.size)
+    pdim= dataset.createDimension('dp_sigma', rapid_trans.z.size)
     tdim = dataset.createDimension('time', None)
     
      
@@ -76,8 +77,8 @@ def create_netcdf(config, rapid_trans, model_trans, fc_trans,
     
     p = dataset.createVariable('pressure',np.float64,(pdim.name,))
     p.units = 'Pa'
-    sigma_th= np.array(rapid_trans.z_)
-    depth = np.array(rapid_trans.z)
+    sigma_th= np.array(rapid_trans.z)
+    depth = np.array(rapid_trans.z_)
 
 #  determine depth with sigma theta
     interp_sig = interp1d(np.linspace(0, 1, len(sigma_th)), sigma_th, kind='linear', fill_value='extrapolate')
@@ -145,7 +146,7 @@ def create_netcdf(config, rapid_trans, model_trans, fc_trans,
     s_fc_fwt[:] = fc_trans.oft_total / ((-1.0/fc_trans.sref) * fc_trans.net_transport)
         
     # Basinwide transport profile - RAPID approx
-    v_basin_rapid = dataset.createVariable('v_basin_rapid',np.float64,(tdim.name,zdim.name))
+    v_basin_rapid = dataset.createVariable('v_basin_rapid',np.float64,(tdim.name,zdim_.name))
     v_basin_rapid.units = 'Sv/m'
     v_basin_rapid.minimum_longitude = fc_minlon
     v_basin_rapid.maximum_longitude = int_maxlon
@@ -153,7 +154,7 @@ def create_netcdf(config, rapid_trans, model_trans, fc_trans,
     v_basin_rapid[:] = rapid_trans.zonal_sum_v / 1e6
     
     # Basinwide transport profile - model v
-    v_basin_model = dataset.createVariable('v_basin_model',np.float64,(tdim.name,zdim.name))
+    v_basin_model = dataset.createVariable('v_basin_model',np.float64,(tdim.name,zdim_.name))
     v_basin_model.units = 'Sv/m'
     v_basin_model.minimum_longitude = fc_minlon
     v_basin_model.maximum_longitude = int_maxlon
@@ -161,7 +162,7 @@ def create_netcdf(config, rapid_trans, model_trans, fc_trans,
     v_basin_model[:] = model_trans.zonal_sum_v / 1e6
     
     # Florida current transport profile
-    v_fc = dataset.createVariable('v_fc',np.float64,(tdim.name,zdim.name))
+    v_fc = dataset.createVariable('v_fc',np.float64,(tdim.name,zdim_.name))
     v_fc.units = 'Sv/m'
     v_fc.minimum_longitude = fc_minlon
     v_fc.maximum_longitude = fc_maxlon
