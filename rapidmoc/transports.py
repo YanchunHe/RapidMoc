@@ -43,6 +43,7 @@ class Transports(object):
         self.x = vflx.x[minind:maxind]        
         self.y = vflx.y[minind:maxind]
         self.z = vflx.z
+        self.dz = vflx.dz
         self.dz_as_data_vflx = vflx.dz_as_data[:,:,minind:maxind] 
         self.dates = vflx.dates
         self.dx = vflx.cell_widths
